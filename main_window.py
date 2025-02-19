@@ -102,7 +102,7 @@ class MainWindow(Qw.QMainWindow):
   # ボタンクリック時の処理
   def on_button_clicked(self, t):
     """ボタンがクリックされたとき、カーソル位置に文字を挿入し、フォーカスを戻す"""
-    cursor = self.tb_log.textCursor()
+    cursor = self.tb_log2.textCursor()
 
     if t == "|":
       cursor = self.tb_log2.textCursor()
