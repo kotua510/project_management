@@ -16,10 +16,10 @@ class MainWindow(Qw.QMainWindow):
     self.sb_status.showMessage("ファイト!")
 
     # テキストデータの保存先
-    self.data_file = './qt-05.dat'
-    self.text_file = './qt-05-text.dat'
-    self.data_file2 = './qt-05.dat2'
-    self.text_file2 = './qt-05-text.dat2'
+    self.data_file = './1.dat'
+    self.text_file = './text1.dat'
+    self.data_file2 = './2.dat2'
+    self.text_file2 = './text2.dat2'
 
     self.card_counts = {}
     self.charges = {}
