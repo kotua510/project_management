@@ -2,7 +2,6 @@ import os
 import pickle
 from functools import partial
 import PySide6.QtWidgets as Qw
-import PySide6.QtCore as Qt
 
 class MainWindow(Qw.QMainWindow):
   def __init__(self):
@@ -16,13 +15,12 @@ class MainWindow(Qw.QMainWindow):
     self.sb_status.setSizeGripEnabled(False)
     self.sb_status.showMessage("ファイト!")
 
+    # テキストデータの保存先
     self.data_file = './qt-05.dat'
-    self.text_file = './qt-05-text.dat'  # テキストデータの保存先
-
+    self.text_file = './qt-05-text.dat'
     self.data_file2 = './qt-05.dat2'
     self.text_file2 = './qt-05-text.dat2'
 
-    # **🔹 事前にデフォルト値を設定**
     self.card_counts = {}
     self.charges = {}
     self.card_counts2 = {}
@@ -67,14 +65,14 @@ class MainWindow(Qw.QMainWindow):
 
     main_layout.addLayout(button_layout)
 
-    # テキストボックスを右寄せしつつレスポンシブにする
+    # テキストボックスの配置
     text_layout = Qw.QHBoxLayout()
 
     self.tb_log = Qw.QTextEdit()
     self.tb_log.setPlaceholderText('ここはメモなどに使ってください')
     self.tb_log.setSizePolicy(Qw.QSizePolicy.Policy.Expanding,
                               Qw.QSizePolicy.Policy.Expanding)
-    # ✅ 保存されたテキストを読み込む
+    # 保存されたテキストを読み込む
     if os.path.isfile(self.text_file):
       with open(self.text_file, 'r', encoding='utf-8') as file:
         self.tb_log.setPlainText(file.read())
@@ -90,7 +88,6 @@ class MainWindow(Qw.QMainWindow):
     self.tb_log2.setSizePolicy(
         Qw.QSizePolicy.Policy.Expanding, Qw.QSizePolicy.Policy.Expanding)
 
-    # ✅ 保存されたテキストを読み込む
     if os.path.isfile(self.text_file2):
       with open(self.text_file2, 'r', encoding='utf-8') as file2:
         self.tb_log2.setPlainText(file2.read())
@@ -102,6 +99,7 @@ class MainWindow(Qw.QMainWindow):
     """ ステータスバーの更新処理 """
     self.sb_status.showMessage('データを読み込みました。')
 
+  # ボタンクリック時の処理
   def on_button_clicked(self, t):
     """ボタンがクリックされたとき、カーソル位置に文字を挿入し、フォーカスを戻す"""
     cursor = self.tb_log.textCursor()
@@ -125,16 +123,15 @@ class MainWindow(Qw.QMainWindow):
     self.tb_log.setFocus()
 
   def closeEvent(self, event):
-    """プログラム終了時にデータとテキストを保存"""
-    # ✅ テキスト内容を保存
+    # プログラム終了時にデータとテキストを保存
+    # テキスト内容を保存
     with open(self.text_file, 'w', encoding='utf-8') as file:
       file.write(self.tb_log.toPlainText())
 
     with open(self.text_file2, 'w', encoding='utf-8') as file2:
-      # 修正: file.write() → file2.write()
       file2.write(self.tb_log2.toPlainText())
 
-    # ✅ データを保存
+    # データを保存
     with open(self.data_file, 'wb') as file:
       data = {
           'card_counts': self.card_counts,
@@ -144,8 +141,8 @@ class MainWindow(Qw.QMainWindow):
 
     with open(self.data_file2, 'wb') as file2:
       data = {
-          'card_counts2': self.card_counts2,  # 修正: 'card_counts' → 'card_counts2'
-          'charges2': self.charges2  # 修正: 'charges' → 'charges2'
+          'card_counts2': self.card_counts2,
+          'charges2': self.charges2
       }
       pickle.dump(data, file2)
 
