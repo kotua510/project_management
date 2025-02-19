@@ -14,10 +14,19 @@ class MainWindow(Qw.QMainWindow):
     self.sb_status = Qw.QStatusBar()
     self.setStatusBar(self.sb_status)
     self.sb_status.setSizeGripEnabled(False)
-    self.sb_status.showMessage("ハロー(^▽^)/")
+    self.sb_status.showMessage("ファイト!")
 
     self.data_file = './qt-05.dat'
     self.text_file = './qt-05-text.dat'  # テキストデータの保存先
+
+    self.data_file2 = './qt-05.dat2'
+    self.text_file2 = './qt-05-text.dat2'
+
+    # **🔹 事前にデフォルト値を設定**
+    self.card_counts = {}
+    self.charges = {}
+    self.card_counts2 = {}
+    self.charges2 = {}
 
     # データファイルが存在すれば読み込む
     if os.path.isfile(self.data_file):
@@ -25,6 +34,15 @@ class MainWindow(Qw.QMainWindow):
         data = pickle.load(file)
         self.card_counts = data.get('card_counts', {})
         self.charges = data.get('charges', {})
+        self.update_status()
+    else:
+      self.sb_status.showMessage('プログラムを起動しました。')
+
+    if os.path.isfile(self.data_file2):
+      with open(self.data_file2, 'rb') as file2:
+        data = pickle.load(file2)
+        self.card_counts2 = data.get('card_counts2', {})
+        self.charges2 = data.get('charges2', {})
         self.update_status()
     else:
       self.sb_status.showMessage('プログラムを起動しました。')
@@ -51,20 +69,34 @@ class MainWindow(Qw.QMainWindow):
 
     # テキストボックスを右寄せしつつレスポンシブにする
     text_layout = Qw.QHBoxLayout()
-    text_layout.addStretch(2)
 
     self.tb_log = Qw.QTextEdit()
-    self.tb_log.setPlaceholderText('ここに文字を打つことができます')
-    self.tb_log.setSizePolicy(
-        Qw.QSizePolicy.Policy.Expanding, Qw.QSizePolicy.Policy.Expanding)
-
+    self.tb_log.setPlaceholderText('ここはメモなどに使ってください')
+    self.tb_log.setSizePolicy(Qw.QSizePolicy.Policy.Expanding,
+                              Qw.QSizePolicy.Policy.Expanding)
     # ✅ 保存されたテキストを読み込む
     if os.path.isfile(self.text_file):
       with open(self.text_file, 'r', encoding='utf-8') as file:
         self.tb_log.setPlainText(file.read())
 
-    text_layout.addWidget(self.tb_log, stretch=3)
+    text_layout.addWidget(self.tb_log, stretch=1)
     main_layout.addLayout(text_layout)
+
+    text_layout2 = Qw.QHBoxLayout()
+    text_layout2.addStretch(2)
+
+    self.tb_log2 = Qw.QTextEdit()
+    self.tb_log2.setPlaceholderText('ここでプロジェクト管理ができます')
+    self.tb_log2.setSizePolicy(
+        Qw.QSizePolicy.Policy.Expanding, Qw.QSizePolicy.Policy.Expanding)
+
+    # ✅ 保存されたテキストを読み込む
+    if os.path.isfile(self.text_file2):
+      with open(self.text_file2, 'r', encoding='utf-8') as file2:
+        self.tb_log2.setPlainText(file2.read())
+
+    text_layout.addWidget(self.tb_log2, stretch=3)
+    main_layout.addLayout(text_layout2)
 
   def update_status(self):
     """ ステータスバーの更新処理 """
@@ -98,6 +130,10 @@ class MainWindow(Qw.QMainWindow):
     with open(self.text_file, 'w', encoding='utf-8') as file:
       file.write(self.tb_log.toPlainText())
 
+    with open(self.text_file2, 'w', encoding='utf-8') as file2:
+      # 修正: file.write() → file2.write()
+      file2.write(self.tb_log2.toPlainText())
+
     # ✅ データを保存
     with open(self.data_file, 'wb') as file:
       data = {
@@ -105,6 +141,14 @@ class MainWindow(Qw.QMainWindow):
           'charges': self.charges
       }
       pickle.dump(data, file)
-      print('データファイルを更新セーブしました。')
+
+    with open(self.data_file2, 'wb') as file2:
+      data = {
+          'card_counts2': self.card_counts2,  # 修正: 'card_counts' → 'card_counts2'
+          'charges2': self.charges2  # 修正: 'charges' → 'charges2'
+      }
+      pickle.dump(data, file2)
+
+    print('データファイルを更新セーブしました。')
 
     event.accept()
