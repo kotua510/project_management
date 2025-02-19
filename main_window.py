@@ -105,7 +105,7 @@ class MainWindow(Qw.QMainWindow):
     cursor = self.tb_log.textCursor()
 
     if t == "|":
-      cursor = self.tb_log.textCursor()
+      cursor = self.tb_log2.textCursor()
       block = cursor.block()
       line_text = block.text()
       line_length = len(line_text)
@@ -119,8 +119,8 @@ class MainWindow(Qw.QMainWindow):
     else:
       cursor.insertText(t)
 
-    self.tb_log.setTextCursor(cursor)
-    self.tb_log.setFocus()
+    self.tb_log2.setTextCursor(cursor)
+    self.tb_log2.setFocus()
 
   def closeEvent(self, event):
     # プログラム終了時にデータとテキストを保存
