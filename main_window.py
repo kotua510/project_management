@@ -2,6 +2,7 @@ import os
 import pickle
 from functools import partial
 import PySide6.QtWidgets as Qw
+import unicodedata
 
 class MainWindow(Qw.QMainWindow):
   def __init__(self):
@@ -118,6 +119,28 @@ class MainWindow(Qw.QMainWindow):
       cursor.insertText("|")
     else:
       cursor.insertText(t)
+    """if t == "|":
+      cursor = self.tb_log2.textCursor()
+      block = cursor.block()
+      line_text = block.text()
+      for char in line_text:
+        width = unicodedata.east_asian_width(char)
+        if width in ("F"):
+          full_text += 1
+        else:
+          harf_text += 1
+      print(harf_text)
+      # print(full_text)
+      # print(harf_text)
+
+      cursor.insertText("\n")
+      for i in range(full_text):
+        cursor.insertText(" ")
+      for i in range(harf_text):
+        cursor.insertText(" ")
+      cursor.insertText("|")
+    else:
+      cursor.insertText(t)"""
 
     self.tb_log2.setTextCursor(cursor)
     self.tb_log2.setFocus()
