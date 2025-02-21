@@ -2,7 +2,9 @@ import os
 import pickle
 from functools import partial
 import PySide6.QtWidgets as Qw
-import unicodedata
+from PySide6.QtGui import QTextCursor
+import re
+
 
 class MainWindow(Qw.QMainWindow):
   def __init__(self):
@@ -100,47 +102,51 @@ class MainWindow(Qw.QMainWindow):
     """ ステータスバーの更新処理 """
     self.sb_status.showMessage('データを読み込みました。')
 
+  def count_hiragana_alnum(self, text):
+    # ひらがな・全角数字・英字・半角数字・丸数字の正規表現パターン
+    hiragana_pattern = r'[\u3041-\u3096\u30FC\uFF10-\uFF19\u3000\u2460-\u2473]+'
+    # アルファベット（小文字・大文字）+ 半角数字 + - の正規表現パターン
+    alnum_pattern = r'[a-zA-Z0-9\-\u0020]+'
+
+    # 先ほどの正規表現にしたがって半角、全角文字をそれぞれ抽出
+    hiragana_matches = re.findall(hiragana_pattern, text)
+    alnum_matches = re.findall(alnum_pattern, text)
+
+    # 各文字の総数をカウント
+    hiragana_count = sum(len(match) for match in hiragana_matches)
+    alnum_count = sum(len(match) for match in alnum_matches)
+
+    return hiragana_count, alnum_count
+
   # ボタンクリック時の処理
   def on_button_clicked(self, t):
     """ボタンがクリックされたとき、カーソル位置に文字を挿入し、フォーカスを戻す"""
     cursor = self.tb_log2.textCursor()
 
     if t == "|":
+      full_text = 0
+      harf_text = 0
+      print("full_text: ", full_text)
+      print("harf_text: ", harf_text)
       cursor = self.tb_log2.textCursor()
       block = cursor.block()
       line_text = block.text()
-      line_length = len(line_text)
-      print(f"現在の行の文字数: {line_length}")
-      line_length -= 1
-
-      cursor.insertText("\n")
-      for i in range(line_length):
-        cursor.insertText(" ")
-      cursor.insertText("|")
-    else:
-      cursor.insertText(t)
-    """if t == "|":
-      cursor = self.tb_log2.textCursor()
-      block = cursor.block()
-      line_text = block.text()
-      for char in line_text:
-        width = unicodedata.east_asian_width(char)
-        if width in ("F"):
-          full_text += 1
-        else:
-          harf_text += 1
-      print(harf_text)
-      # print(full_text)
-      # print(harf_text)
+      text = line_text
+      hiragana_count, alnum_count = self.count_hiragana_alnum(text)
+      for i in range(hiragana_count):
+        full_text += 1
+      for i in range(alnum_count):
+        harf_text += 1
 
       cursor.insertText("\n")
       for i in range(full_text):
-        cursor.insertText(" ")
+        cursor.insertText("  ")
+
       for i in range(harf_text):
         cursor.insertText(" ")
       cursor.insertText("|")
     else:
-      cursor.insertText(t)"""
+      cursor.insertText(t)
 
     self.tb_log2.setTextCursor(cursor)
     self.tb_log2.setFocus()
