@@ -9,7 +9,7 @@ import re
 class MainWindow(Qw.QMainWindow):
   def __init__(self):
     super().__init__()
-    self.setWindowTitle("MainWindow")
+    self.setWindowTitle("プロジェクト管理アプリ")
     self.setGeometry(100, 50, 640, 240)
 
     # ステータスバーの初期化
